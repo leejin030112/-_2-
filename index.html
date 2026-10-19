@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>안녕! 다음에 또 놀자!</title>
+<link rel="icon" type="image/jpeg" href="썸네일2.jpg">
+<style>
+  @font-face{ font-family:"AyoungSYearning2019Handwriting"; src:url("https://cdn.jsdelivr.net/gh/Project-Noonnu/2607161334@2019/2019/Griun_AhyoungsHandwriteIn2019-Rg.woff2") format("woff2"); font-weight:400; font-display:swap; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; height:100vh; display:flex; flex-direction:column; font-family:"AyoungSYearning2019Handwriting",sans-serif; }
+
+
+  #top{ height:77px; flex:none; background:#000; color:#fff; display:flex;
+    align-items:center; justify-content:space-between; padding:0 22px; }
+  #title{ font-size:24px; }
+  #nav{ display:flex; gap:50px; }
+  .navItem{ position:relative; }
+  .navBtn{ background:none; border:none; color:#fff; font-size:24px; font-family:inherit; cursor:pointer; }
+
+
+  .box{ display:none; position:absolute; top:100%; right:0; margin-top:20px; z-index:10;
+    width:340px; padding:20px; background:#fff; color:#111; font-size:16px; line-height:1.6; }
+
+
+  #wrap{ flex:1; display:flex; min-height:0; }
+
+
+  #side{ width:250px; flex:none; background:#fff; padding:18px 16px; display:flex; flex-direction:column; gap:8px; }
+  #side button{ flex:1; min-height:0; width:100%; border:1px solid #fff; border-radius:12px; background:#fff; color:#342d24; font:inherit; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:6px 8px; transition:transform .18s ease, background .18s ease, box-shadow .18s ease; }
+
+  #side button:focus-visible{ outline:3px solid #fff; outline-offset:2px; }
+  #side .side-button-image{ width:min(100%,76px); height:76px; object-fit:contain; display:block; }
+  #side .side-button-title{ font-size:15px; line-height:1.15; text-align:center; }
+  #side #homeBtn{ flex:1; font-size:inherit; }
+
+
+  #main{ flex:1; background:#fff; padding:25px; display:flex; gap:19px; min-width:0; }
+  .panel{ background:#fff; display:flex; align-items:center; justify-content:center; font-size:24px; overflow:hidden; }
+  .panel img{ width:100%; height:100%; object-fit:contain; display:block; }
+  #main{ overflow:auto; }
+  #character{ flex:0 0 420px; width:420px; flex-direction:column; justify-content:flex-start; padding:18px 24px; }
+  #character .friend-portrait{ width:100%; height:56%; min-height:220px; object-fit:contain; flex:none; }
+  #playSummary{ width:100%; margin-top:12px; color:#111; font-size:21px; line-height:1.55; }
+  #playSummary h2{ margin:0 0 10px; font-size:24px; font-weight:400; white-space:nowrap; }
+  #playSummary ul{ list-style:none; padding:0; margin:0; }
+  #playSummary li{ display:flex; justify-content:space-between; gap:10px; white-space:nowrap; }
+  #playSummary .stat-value{ text-align:right; }
+  #diary{ flex:0 0 1000px; width:1000px; min-width:1000px; position:relative; }
+  #diary .diary-sheet{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:min(100%,100vh); max-height:100%; aspect-ratio:1 / 1; }
+  #diary .diary-page{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; z-index:2;  pointer-events:none;}
+  #diary .diary-art{ position:absolute; top:11.5%; left:6%; width:88%; height:62%; object-fit:contain; z-index:1;  cursor:pointer;}
+  #diary .diary-art[hidden]{ display:none; }
+  #diary .ammo-layer{ position:absolute; top:11.5%; left:6%; width:88%; height:62%; overflow:hidden; z-index:3; pointer-events:none; }
+  #diary .ammo-layer img{ position:absolute; width:30px; height:30px; object-fit:contain; pointer-events:auto; cursor:pointer; }
+  #diary .tagger-layer{ position:absolute; top:11.5%; left:6%; width:88%; height:62%; overflow:hidden; z-index:4; pointer-events:none; }
+  #diary .tagger-layer[hidden]{ display:none; }
+  #diary .tagger-layer img{ position:absolute; width:18%; height:26%; object-fit:contain; transform:translate(-50%,-50%); visibility:hidden; }
+  #diary .sand-canvas{ position:absolute; top:11.5%; left:6%; width:88%; height:62%; z-index:3; pointer-events:none; }
+  #diary .sand-canvas.active{ pointer-events:auto; cursor:none; touch-action:none; }
+  #diary .tree-cursor{ position:absolute; top:11.5%; left:6%; width:88%; height:62%; z-index:5; pointer-events:none; }
+  #diary .tree-cursor[hidden]{ display:none; }
+  #diary .tree-cursor img{ position:absolute; width:64px; height:80px; object-fit:contain; transform:translate(-50%,-50%); visibility:hidden; }
+
+  @media (max-width:767px){
+    body{ height:auto; min-height:100vh; width:100%; overflow-x:hidden; }
+    #top{ height:auto; min-height:64px; padding:12px 14px; gap:8px; align-items:flex-start; flex-direction:column; }
+    #title{ font-size:19px; }
+    #nav{ width:100%; gap:20px; }
+    .navBtn{ font-size:15px; padding:4px 0; }
+    .box{ position:fixed; top:105px; left:14px; right:14px; width:auto; margin:0; }
+    #wrap{ width:100%; min-width:0; flex-direction:column; flex:none; }
+    #side{ width:100%; padding:12px; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+    #side button{ min-height:92px; padding:6px 4px; gap:3px; }
+    #side .side-button-image{ width:min(100%,58px); height:54px; }
+    #side .side-button-title{ font-size:12px; line-height:1.2; }
+    #main{ width:100%; min-width:0; flex:none; flex-direction:column; gap:12px; padding:12px; overflow:visible; }
+    #character, #diary{ flex:none; width:100%; min-width:0; height:auto; min-height:0; aspect-ratio:1 / 1; }
+    #character{ padding:12px 18px; }
+    #character .friend-portrait{ height:52%; min-height:0; }
+    #playSummary{ margin-top:4px; font-size:clamp(14px,4vw,18px); line-height:1.45; }
+    #playSummary h2{ margin-bottom:4px; font-size:clamp(16px,4.5vw,20px); }
+    .panel{ width:100%; height:auto; min-height:0; aspect-ratio:1 / 1; }
+    #diary .diary-sheet{ width:100%; height:100%; max-height:none; aspect-ratio:auto; }
+    #diary .tree-cursor img{ width:42px; height:56px; }
+    #diary{ order:1; }
+    #character{ order:2; }
+  }
+
+  #startScreen{ position:fixed; inset:0; z-index:100; display:none; flex-direction:column; align-items:center; justify-content:center; gap:28px; padding:24px; background:#fff; }
+  #startScreen img{ display:block; width:min(68vw,420px); height:min(55vh,480px); object-fit:contain; }
+  #playBtn{ border:0; border-radius:999px; padding:15px 34px; background:#000; color:#fff; font:inherit; font-size:18px; cursor:pointer; }
+  #playBtn:hover{ background:#333; }
+  /* ---------- 집에 가는 엔딩 화면 ---------- */
+  #goodbyeScreen{ position:fixed; inset:0; z-index:200; display:none; align-items:center; justify-content:center; background:#fff; overflow:hidden; }
+  #goodbyeScreen.active{ display:flex; }
+  #goodbyeCharacterWrap{ position:absolute; left:50%; top:46%; transform:translate(-50%,-50%); width:min(94vw,900px); display:flex; align-items:center; justify-content:center; gap:clamp(18px,4vw,56px); transition:opacity .5s ease; }
+  #goodbyeCharacter{ display:block; flex:none; width:min(34vw,320px); height:min(50vh,420px); object-fit:contain; transform:scale(1); transform-origin:center; transition:transform .28s ease, opacity .9s ease; }
+  #goodbyeSummary{ width:min(42vw,360px); color:#111; font-size:clamp(14px,1.7vw,21px); line-height:1.55; transition:opacity .5s ease; }
+  #goodbyeSummary h2{ margin:0 0 10px; font-size:clamp(18px,2vw,25px); font-weight:400; white-space:nowrap; }
+  #goodbyeSummary ul{ list-style:none; padding:0; margin:0; }
+  #goodbyeSummary li{ display:flex; justify-content:space-between; gap:10px; white-space:nowrap; }
+  #goodbyeSummary .stat-value{ text-align:right; }
+  #goodbyeScreen.departing #goodbyeSummary{ opacity:0; }
+
+  #goodbyeScreen::after{ content:""; position:absolute; inset:0; z-index:1; pointer-events:none; opacity:0; background:radial-gradient(ellipse at calc(50% - clamp(9px,15.25vw,208px)) 46%, transparent 28%, rgba(0,0,0,.88) 100%); }
+  #goodbyeScreen.departing::after{ animation:goodbyeVignette 7.8s ease-out forwards; animation-play-state:paused; }
+  #goodbyeScreen.departing.walking::after{ animation-play-state:running; }
+  @keyframes goodbyeVignette{ from{ opacity:0; } to{ opacity:1; } }
+  #goodbyeScreen.final-state::after{ backdrop-filter:blur(10px); }
+  #goodbyeScreen.cursor-waving, #goodbyeScreen.cursor-waving *{ cursor:none !important; }
+  #goodbyeCursor{ position:fixed; z-index:250; width:clamp(162px,24vw,288px); height:clamp(162px,24vw,288px); object-fit:contain; pointer-events:none; display:none; transform:translate(-12%,-12%); }
+  #goodbyeScreen.cursor-waving #goodbyeCursor{ display:block; }
+
+  #goodbyeButton{ position:absolute; bottom:7vh; left:50%; transform:translateX(-50%); border:0; border-radius:999px; padding:14px 32px; background:#000; color:#fff; font:inherit; font-size:18px; cursor:pointer; white-space:nowrap; }
+  #goodbyeScreen.final-state{ background:rgba(255,255,255,.78); backdrop-filter:blur(10px); }
+  #goodbyeFinal{ position:absolute; z-index:2; inset:0; display:flex; align-items:center; justify-content:center; padding:24px; opacity:0; pointer-events:none; transition:opacity 1.4s ease; }
+  #goodbyeScreen.final-state #goodbyeFinal{ opacity:1; }
+  #goodbyeScreen.final-fading #goodbyeFinal{ opacity:0; }
+  #goodbyeMessageBox{ width:min(94vw,1300px); min-height:230px; padding:42px 30px; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.82); backdrop-filter:blur(16px); box-shadow:0 18px 60px rgba(0,0,0,.2); }
+  #goodbyeMessage{ margin:0; color:#fff; text-align:center; white-space:nowrap; font-size:clamp(12px,2.5vw,36px); line-height:1.4; opacity:0; transition:opacity 1.2s ease; }
+  #goodbyeScreen.final-state #goodbyeMessage{ opacity:1; }
+  #goodbyeScreen.ending-done #goodbyeFinal{ opacity:0; }
+  #goodbyeScreen.ending-done{ background:#000; backdrop-filter:none; }
+  #goodbyeScreen.ending-done::after{ opacity:1; background:#000; backdrop-filter:none; }
+  #goodbyeFinalCharacter{ position:absolute; z-index:2; left:50%; top:50%; width:min(34vw,320px); height:min(50vh,420px); object-fit:contain; transform:translate(-50%,-50%); opacity:0; filter:blur(4px); transition:opacity 1.4s ease; pointer-events:none; }
+  #goodbyeScreen.ending-done #goodbyeFinalCharacter{ opacity:1; }
+  #goodbyeRestart{ position:absolute; top:calc(50% - min(25vh,210px) - 68px); left:50%; right:auto; transform:translateX(-50%); z-index:3; border:0; border-radius:999px; padding:12px 22px; background:#000; color:#fff; font:inherit; font-size:18px; cursor:pointer; opacity:0; pointer-events:none; transition:opacity 1s ease; }
+  #goodbyeScreen.ending-done #goodbyeRestart{ opacity:1; pointer-events:auto; }
+  @keyframes goodbyeTextPulse{ 0%,12%,100%{ opacity:0; } 25%,78%{ opacity:1; } }
+  @media(max-width:767px){
+    #goodbyeScreen::after{ background:radial-gradient(ellipse at 22% 44%, transparent 28%, rgba(0,0,0,.88) 100%); }
+    #goodbyeCharacterWrap{ top:44%; width:96vw; gap:12px; }
+    #goodbyeCharacter{ width:36vw; height:min(42vh,360px); }
+    #goodbyeSummary{ width:54vw; font-size:clamp(11px,3.1vw,16px); }
+    #goodbyeSummary h2{ margin-bottom:6px; font-size:clamp(14px,4vw,19px); }
+    #goodbyeSummary li{ gap:5px; }
+    #goodbyeMessageBox{ min-height:190px; padding:28px 12px; }
+    #goodbyeMessage{ font-size:clamp(11px,2.5vw,20px); }
+    #goodbyeFinalCharacter{ width:54vw; height:42vh; }
+    #goodbyeRestart{ top:calc(50% - 21vh - 58px); left:50%; right:auto; transform:translateX(-50%); padding:9px 16px; font-size:15px; }
+  }
+</style>
+</head>
+<body>
+<div id="goodbyeScreen">
+  <div id="goodbyeCharacterWrap">
+    <img id="goodbyeCharacter" src="주인공.png" alt="주인공">
+    <section id="goodbyeSummary" aria-live="polite">
+      <h2>오늘 뭐하고 놀았지?</h2>
+      <ul>
+        <li><span>두꺼비집</span><span class="stat-value" id="goodbyeToadStat">0번</span></li>
+        <li><span>시소타기</span><span class="stat-value">5번 탔어</span></li>
+        <li><span>비비탄 총알</span><span class="stat-value" id="goodbyeAmmoStat">0개 모았어!</span></li>
+        <li><span>술래잡기</span><span class="stat-value" id="goodbyeTaggerStat">0번 잡혔네</span></li>
+        <li><span>모래사장</span><span class="stat-value" id="goodbyeSandStat">아직 안 그렸어!</span></li>
+      </ul>
+    </section>
+  </div>
+  <img id="goodbyeCursor" src="손1.png" alt="">
+  <button id="goodbyeButton" type="button">안녕 잘가</button>
+  <div id="goodbyeFinal"><div id="goodbyeMessageBox"><p id="goodbyeMessage">당신은 어릴 적 친구와의 마지막 헤어짐을 기억하시나요?</p></div></div>
+  <img id="goodbyeFinalCharacter" src="주인공뒷모습.png" alt="주인공 뒷모습">
+  <button id="goodbyeRestart" type="button">다시 놀기</button>
+</div>
+<div id="startScreen">
+  <img src="주인공.png" alt="친구">
+  <button id="playBtn" type="button">친구와 놀기</button>
+</div>
+
+<div id="top">
+  <div id="title">안녕! 다음에 또 놀자!</div>
+  <div id="nav">
+    <div class="navItem">
+      <button class="navBtn" id="introBtn">안녕,잘가!</button>
+      <div class="box" id="introBox">"안녕 잘가! 내일 또 놀자."" <br><br> 우리는 어린시절 친구들과 열심히 뛰어놀고, 금방 다시 만나길 외칩니다. 하지만 세월이 흐르면서 그게 마지막 인사였을지 인식하지 못합니다. 이 웹사이트에서는 친구와 마지막으로 놀았던 기억을 회상해봅니다. <br><br><br>"당신은 친구와의 마지막 인사를 기억하나요?"</div>
+    </div>
+    <div class="navItem">
+      <button class="navBtn" id="memoryBtn">사라지는 흙놀이터, 사라지는 기억</button>
+      <div class="box" id="memoryBox">이 웹사이트에는 제가 어린 시절 친구들과 자주 하고 놀았던 놀이들이 수록되어 있습니다. 운동장 옆 놀이터에서 하던 두꺼비집, 흙에 파묻혀있는 비비탄총알 줍기, 타이어를 팡팡치며 시소타기, 흙먼지를 날리며 했던 술래잡기, 떄로는 홀로 운동장에 그림을 그렸을 때....현대의 놀이터에서는 점점 흙이 사라지고 있습니다. <br><br>당신의 주변엔 흙놀이터가 아직 존재하나요? 당신이 놀았던 놀이터가 아직도 똑같은 모습인가요?</div>
+    </div>
+  </div>
+</div>
+
+<div id="wrap">
+  <div id="side">
+    <button type="button" data-diary-page="그림일기1.png" data-diary-art="1-1.png" aria-label="두꺼비집 그림일기 보기"><img class="side-button-image" src="버튼1.png" alt=""><span class="side-button-title">두꺼비집</span></button>
+    <button type="button" data-diary-page="그림일기2.png" data-diary-art="2.png" aria-label="비비탄 총알 모으기 그림일기 보기"><img class="side-button-image" src="버튼2.png" alt=""><span class="side-button-title">비비탄 총알 모으기</span></button>
+    <button type="button" data-diary-page="그림일기3.png" data-diary-art="3.png" aria-label="시소타기 그림일기 보기"><img class="side-button-image" src="버튼3.png" alt=""><span class="side-button-title">시소타기</span></button>
+    <button type="button" data-diary-page="그림일기4.png" data-diary-art="4.png" aria-label="술래잡기 그림일기 보기"><img class="side-button-image" src="버튼4.png" alt=""><span class="side-button-title">술래잡기</span></button>
+    <button type="button" data-diary-page="그림일기5.png" data-diary-art="5.png" aria-label="모래사장 그림일기 보기"><img class="side-button-image" src="버튼5.png" alt=""><span class="side-button-title">모래사장</span></button>
+    <button type="button" id="homeBtn" aria-label="집에 가기"><img class="side-button-image" src="버튼6.png" alt=""><span class="side-button-title">집에 가야지</span></button>
+  </div>
+  <div id="main">
+    <div class="panel" id="character">
+      <img class="friend-portrait" src="주인공.png" alt="주인공">
+      <section id="playSummary" aria-live="polite">
+        <h2>오늘 뭐하고 놀았지?</h2>
+        <ul>
+          <li><span>두꺼비집</span><span class="stat-value" id="toadStat">0번</span></li>
+          <li><span>시소타기</span><span class="stat-value">5번 탔어</span></li>
+          <li><span>비비탄 총알</span><span class="stat-value" id="ammoStat">0개 모았어!</span></li>
+          <li><span>술래잡기</span><span class="stat-value" id="taggerStat">0번 잡혔네</span></li>
+          <li><span>모래사장</span><span class="stat-value" id="sandStat">아직 안 그렸어!</span></li>
+        </ul>
+      </section>
+    </div>
+    <div class="panel" id="diary"><div class="diary-sheet"><img class="diary-art" id="diaryArt" src="" alt="" hidden><canvas class="sand-canvas" id="sandCanvas"></canvas><div class="tree-cursor" id="treeCursor" hidden><img id="treeCursorImage" src="나무.png" alt=""></div><div class="ammo-layer" id="ammoLayer"></div><div class="tagger-layer" id="taggerLayer" hidden><img id="taggerSprite" src="술래잡기1.png" alt="술래잡기"></div><img class="diary-page" id="diaryPage" src="그림일기.png" alt="그림일기"></div></div>
+  </div>
+</div>
+
+<script>
+
+
+function toggleBox(box){
+  if(box.style.display == "block"){
+    box.style.display = "none";
+  }else{
+    box.style.display = "block";
+  }
+}
+
+introBtn.onclick = function(){ toggleBox(introBox); };
+document.getElementById("playBtn").onclick = function(){
+  document.getElementById("startScreen").style.display = "none";
+};
+memoryBtn.onclick = function(){ toggleBox(memoryBox); };
+var toadstoolFrames = ["1-1.png","1-2.png","1-3.png","1-4.png","1-5.png","1-6.png","1-7.png","1-8.png","1-9.png"];
+var toadstoolFrameIndex = -1;
+var ammoSpawnTimer = null;
+var ammoLayer = document.getElementById("ammoLayer");
+var sandCanvas = document.getElementById("sandCanvas");
+var sandContext = sandCanvas.getContext("2d");
+var treeCursor = document.getElementById("treeCursor");
+var treeCursorImage = document.getElementById("treeCursorImage");
+var sandActive = false;
+var sandDrawing = false;
+var sandLastPoint = null;
+var playStats = { toad:0, ammo:0, tagger:0, sand:false };
+var latestPointer = null;
+var taggerNearPointer = false;
+function renderPlayStats(){
+  document.getElementById("toadStat").textContent = playStats.toad + "번";
+  document.getElementById("ammoStat").textContent = playStats.ammo + "개 모았어!";
+  document.getElementById("taggerStat").textContent = playStats.tagger + "번 잡혔네";
+  document.getElementById("sandStat").textContent = playStats.sand ? "그림 재밌어!" : "아직 안 그렸어!";
+  document.getElementById("goodbyeToadStat").textContent = playStats.toad + "번";
+  document.getElementById("goodbyeAmmoStat").textContent = playStats.ammo + "개 모았어!";
+  document.getElementById("goodbyeTaggerStat").textContent = playStats.tagger + "번 잡혔네";
+  document.getElementById("goodbyeSandStat").textContent = playStats.sand ? "그림 재밌어!" : "아직 안 그렸어!";
+}
+
+function stopSandDrawing(){
+  sandActive = false;
+  sandDrawing = false;
+  sandLastPoint = null;
+  sandCanvas.classList.remove("active");
+  treeCursor.hidden = true;
+  treeCursorImage.style.visibility = "hidden";
+}
+
+function startSandDrawing(){
+  var rect = sandCanvas.getBoundingClientRect();
+  var pixelRatio = window.devicePixelRatio || 1;
+  sandCanvas.width = Math.round(rect.width * pixelRatio);
+  sandCanvas.height = Math.round(rect.height * pixelRatio);
+  sandContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+  sandContext.lineCap = "round";
+  sandContext.lineJoin = "round";
+  sandContext.lineWidth = 13;
+  sandContext.strokeStyle = "rgba(198, 157, 111, 0.72)";
+  sandContext.shadowColor = "rgba(198, 157, 111, 0.22)";
+  sandContext.shadowBlur = 5;
+  sandActive = true;
+  sandCanvas.classList.add("active");
+  treeCursor.hidden = false;
+}
+
+function getSandPoint(event){
+  var rect = sandCanvas.getBoundingClientRect();
+  return { x: Math.max(0, Math.min(rect.width, event.clientX - rect.left)), y: Math.max(0, Math.min(rect.height, event.clientY - rect.top)), width: rect.width, height: rect.height };
+}
+
+sandCanvas.addEventListener("pointermove", function(event){
+  if (!sandActive) return;
+  var point = getSandPoint(event);
+  treeCursorImage.style.left = (point.x / point.width * 100) + "%";
+  treeCursorImage.style.top = (point.y / point.height * 100) + "%";
+  treeCursorImage.style.visibility = "visible";
+  if (sandDrawing && sandLastPoint){
+    sandContext.beginPath();
+    sandContext.moveTo(sandLastPoint.x, sandLastPoint.y);
+    sandContext.quadraticCurveTo(sandLastPoint.x, sandLastPoint.y, (sandLastPoint.x + point.x) / 2, (sandLastPoint.y + point.y) / 2);
+    sandContext.stroke();
+  }
+  sandLastPoint = point;
+});
+sandCanvas.addEventListener("pointerdown", function(event){
+  if (!sandActive || event.button !== 0) return;
+  sandDrawing = true;
+  if (!playStats.sand){ playStats.sand = true; renderPlayStats(); }
+  sandLastPoint = getSandPoint(event);
+  sandContext.beginPath();
+  sandContext.arc(sandLastPoint.x, sandLastPoint.y, sandContext.lineWidth / 2, 0, Math.PI * 2);
+  sandContext.fillStyle = sandContext.strokeStyle;
+  sandContext.fill();
+  this.setPointerCapture(event.pointerId);
+});
+sandCanvas.addEventListener("pointerup", function(){ sandDrawing = false; sandLastPoint = null; });
+sandCanvas.addEventListener("pointercancel", function(){ sandDrawing = false; sandLastPoint = null; });
+var taggerLayer = document.getElementById("taggerLayer");
+var taggerSprite = document.getElementById("taggerSprite");
+var taggerActive = false;
+var taggerTimer = null;
+var chasePoints = [];
+var taggerFrame = 1;
+var nextTaggerFrameAt = 0;
+var taggerX = null;
+var taggerY = null;
+var taggerTargetX = null;
+var taggerTargetY = null;
+
+function stopTagger(){
+  taggerActive = false;
+  taggerLayer.hidden = true;
+  taggerSprite.style.visibility = "hidden";
+  chasePoints = [];
+  taggerX = taggerY = taggerTargetX = taggerTargetY = null;
+  if (taggerTimer){ clearInterval(taggerTimer); taggerTimer = null; }
+}
+
+function startTagger(){
+  stopTagger();
+  taggerActive = true;
+  taggerLayer.hidden = false;
+  taggerFrame = 1;
+  taggerSprite.src = "술래잡기1.png";
+  nextTaggerFrameAt = Date.now() + 300;
+  taggerTimer = setInterval(function(){
+    var now = Date.now();
+    if (now >= nextTaggerFrameAt){
+      taggerFrame = taggerFrame === 1 ? 2 : 1;
+      taggerSprite.src = taggerFrame === 1 ? "술래잡기1.png" : "술래잡기2.png";
+      nextTaggerFrameAt = now + 300;
+    }
+    var delayedPoint = null;
+    for (var i = 0; i < chasePoints.length; i++){
+      if (chasePoints[i].time <= now - 1000) delayedPoint = chasePoints[i];
+      else break;
+    }
+    if (delayedPoint){
+      var pointIndex = chasePoints.indexOf(delayedPoint);
+      if (pointIndex > 0) chasePoints.splice(0, pointIndex);
+      taggerTargetX = Math.max(10, Math.min(90, delayedPoint.x));
+      taggerTargetY = Math.max(15, Math.min(85, delayedPoint.y));
+    }
+    if (taggerTargetX !== null){
+      if (latestPointer){
+        var pointerDistance = Math.hypot(taggerX === null ? 100 : taggerX - latestPointer.x, taggerY === null ? 100 : taggerY - latestPointer.y);
+        if (pointerDistance < 5 && !taggerNearPointer){ playStats.tagger++; renderPlayStats(); taggerNearPointer = true; }
+      }
+      if (taggerX === null){
+        taggerX = taggerTargetX;
+        taggerY = taggerTargetY;
+      }else{
+        taggerX += (taggerTargetX - taggerX) * 0.18;
+        taggerY += (taggerTargetY - taggerY) * 0.18;
+      }
+      taggerSprite.style.left = taggerX + "%";
+      taggerSprite.style.top = taggerY + "%";
+      taggerSprite.style.visibility = "visible";
+    }
+  }, 40);
+}
+
+document.getElementById("diaryArt").addEventListener("mousemove", function(event){
+  if (!taggerActive) return;
+  var rect = this.getBoundingClientRect();
+  var pointerX = (event.clientX - rect.left) / rect.width * 100;
+  var pointerY = (event.clientY - rect.top) / rect.height * 100;
+  latestPointer = { x:pointerX, y:pointerY };
+  if (taggerX !== null && Math.hypot(taggerX-pointerX, taggerY-pointerY) > 12) taggerNearPointer = false;
+  chasePoints.push({ x:pointerX, y:pointerY, time:Date.now() });
+  if (chasePoints.length > 300) chasePoints.shift();
+});
+document.getElementById("diaryArt").addEventListener("mouseleave", function(){
+  chasePoints = [];
+  taggerX = taggerY = taggerTargetX = taggerTargetY = null;
+  taggerSprite.style.visibility = "hidden";
+});
+
+function clearAmmo(){
+  if (ammoSpawnTimer){ clearInterval(ammoSpawnTimer); ammoSpawnTimer = null; }
+  ammoLayer.innerHTML = "";
+}
+
+function spawnAmmo(count){
+  for (var i = 0; i < count; i++){
+    var ammo = document.createElement("img");
+    ammo.src = Math.random() < 0.5 ? "2-1.png" : "2-2.png";
+    ammo.alt = "비비탄";
+    var safeInsetX = ammoLayer.clientWidth * 0.08;
+    var safeInsetY = ammoLayer.clientHeight * 0.08;
+    var maxLeft = Math.max(0, ammoLayer.clientWidth - 30 - safeInsetX * 2);
+    var maxTop = Math.max(0, ammoLayer.clientHeight - 30 - safeInsetY * 2);
+    ammo.style.left = safeInsetX + Math.random() * maxLeft + "px";
+    ammo.style.top = safeInsetY + Math.random() * maxTop + "px";
+    ammo.onclick = function(event){ event.stopPropagation(); playStats.ammo++; renderPlayStats(); this.remove(); };
+    ammoLayer.appendChild(ammo);
+  }
+}
+document.querySelectorAll("#side button[data-diary-page]").forEach(function(button){
+  button.onclick = function(){
+    var diaryPage = document.getElementById("diaryPage");
+    var diaryArt = document.getElementById("diaryArt");
+    diaryPage.src = button.dataset.diaryPage;
+    diaryPage.alt = button.textContent.trim() + " 그림일기";
+    clearAmmo();
+    stopTagger();
+    stopSandDrawing();
+    if (button.dataset.diaryArt === "4.png") startTagger();
+    if (button.dataset.diaryArt === "2.png"){
+      spawnAmmo(5);
+      ammoSpawnTimer = setInterval(function(){
+        spawnAmmo(1);
+      }, 2000);
+    }
+    toadstoolFrameIndex = button.dataset.diaryArt === "1-1.png" ? 0 : -1;
+    diaryArt.src = toadstoolFrameIndex >= 0 ? toadstoolFrames[toadstoolFrameIndex] : button.dataset.diaryArt;
+    diaryArt.alt = button.textContent.trim() + " 그림";
+    diaryArt.hidden = false;
+    if (button.dataset.diaryArt === "5.png") startSandDrawing();
+  };
+});
+
+
+renderPlayStats();
+
+document.getElementById("diaryArt").addEventListener("click", function(){
+  if (toadstoolFrameIndex < 0) return;
+  toadstoolFrameIndex = (toadstoolFrameIndex + 1) % toadstoolFrames.length;
+  this.src = toadstoolFrames[toadstoolFrameIndex];
+  if (toadstoolFrameIndex === 0){ playStats.toad++; renderPlayStats(); }
+});
+
+var goodbyeScreen = document.getElementById("goodbyeScreen");
+var goodbyeCharacter = document.getElementById("goodbyeCharacter");
+var goodbyeButton = document.getElementById("goodbyeButton");
+var goodbyeCursor = document.getElementById("goodbyeCursor"), cursorHandFrames = ["손1.png","손2.png","손3.png","손4.png","손3.png","손2.png"], cursorHandIndex = 0, cursorHandTimer = null;
+var goodbyeStarted = false;
+var goodbyeFinished = false;
+var goodbyeEndingTimer = null;
+var goodbyeMode = "idle";
+var goodbyeTimer = null;
+var goodbyeScale = 1;
+var walkFrameIndex = 0;
+var greetingFrames = ["인사1.png","인사2.png","인사3.png","인사2.png","인사1.png"];
+var greetingFrameIndex = 0;
+
+function setGoodbyeMode(mode){
+  if (!goodbyeStarted || goodbyeFinished || goodbyeMode === mode) return;
+  goodbyeMode = mode;
+  goodbyeScreen.classList.toggle("walking", mode === "walk");
+  if (goodbyeTimer){ clearInterval(goodbyeTimer); goodbyeTimer = null; }
+  if (mode === "walk"){
+    goodbyeTimer = setInterval(function(){
+      goodbyeCharacter.src = walkFrameIndex % 2 === 0 ? "뒷걸음1.png" : "뒷걸음2.png";
+      walkFrameIndex++;
+      goodbyeScale = Math.max(0.08, goodbyeScale - 0.035);
+      goodbyeCharacter.style.transform = "scale(" + goodbyeScale + ")";
+      if (goodbyeScale <= 0.08){
+        goodbyeFinished = true;
+        goodbyeScreen.classList.remove("hands-visible");
+        goodbyeMode = "finished";
+        goodbyeScreen.classList.remove("walking");
+        clearInterval(goodbyeTimer);
+        goodbyeTimer = null;
+        goodbyeCharacter.style.opacity = "0";
+        window.setTimeout(function(){ goodbyeScreen.classList.add("final-state"); goodbyeEndingTimer = window.setTimeout(function(){ goodbyeScreen.classList.add("final-fading"); goodbyeEndingTimer = window.setTimeout(function(){ goodbyeScreen.classList.add("ending-done"); goodbyeEndingTimer = null; }, 3400); }, 4200); }, 900);
+      }
+    }, 300);
+  }else if (mode === "greet"){
+    greetingFrameIndex = 0;
+    goodbyeTimer = setInterval(function(){
+      goodbyeCharacter.src = greetingFrames[greetingFrameIndex];
+      greetingFrameIndex = (greetingFrameIndex + 1) % greetingFrames.length;
+    }, 100);
+  }
+}
+
+document.getElementById("homeBtn").onclick = function(){
+  goodbyeStarted = false;
+  goodbyeFinished = false;
+  goodbyeScreen.classList.remove("final-state", "final-fading", "ending-done", "departing", "walking"); if (goodbyeEndingTimer){ clearTimeout(goodbyeEndingTimer); goodbyeEndingTimer = null; }
+  goodbyeCharacter.style.opacity = "1";
+  goodbyeMode = "idle";
+  if (goodbyeTimer){ clearInterval(goodbyeTimer); goodbyeTimer = null; }
+  goodbyeScale = 1;
+  goodbyeCharacter.src = "주인공.png";
+  goodbyeCharacter.style.transform = "scale(1)";
+  goodbyeButton.hidden = false;
+  goodbyeScreen.classList.add("active");
+};
+
+goodbyeButton.onclick = function(){
+  goodbyeStarted = true;
+  goodbyeMode = "idle";
+  goodbyeScale = 1;
+  walkFrameIndex = 0;
+  goodbyeCharacter.src = "주인공뒷모습.png";
+  goodbyeCharacter.style.transform = "scale(1)";
+  goodbyeButton.hidden = true;
+  goodbyeScreen.classList.add("departing");
+  setGoodbyeMode("walk");
+};
+
+document.getElementById("goodbyeRestart").onclick = function(){ window.location.reload(); };
+
+
+goodbyeScreen.addEventListener("pointermove", function(event){
+  if (!goodbyeStarted || goodbyeFinished){
+    goodbyeScreen.classList.remove("cursor-waving");
+    if (cursorHandTimer){ clearInterval(cursorHandTimer); cursorHandTimer = null; }
+    return;
+  }
+  goodbyeCursor.style.left = event.clientX + "px";
+  goodbyeCursor.style.top = event.clientY + "px";
+  if (event.clientY < window.innerHeight / 2){
+    setGoodbyeMode("greet");
+    if (!cursorHandTimer){
+      goodbyeScreen.classList.add("cursor-waving");
+      cursorHandIndex = 0;
+      goodbyeCursor.src = cursorHandFrames[cursorHandIndex];
+      cursorHandTimer = setInterval(function(){
+        cursorHandIndex = (cursorHandIndex + 1) % cursorHandFrames.length;
+        goodbyeCursor.src = cursorHandFrames[cursorHandIndex];
+      }, 100);
+    }
+  }else{
+    setGoodbyeMode("walk");
+    goodbyeScreen.classList.remove("cursor-waving");
+    if (cursorHandTimer){ clearInterval(cursorHandTimer); cursorHandTimer = null; }
+  }
+});
+goodbyeScreen.addEventListener("pointerleave", function(){
+  goodbyeScreen.classList.remove("cursor-waving");
+  if (cursorHandTimer){ clearInterval(cursorHandTimer); cursorHandTimer = null; }
+});
+</script>
+</body>
+</html>
